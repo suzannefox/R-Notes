@@ -38,7 +38,8 @@ iris.3 <- mutate(iris, Petal.Length = ifelse(Species=="setosa", 3, Petal.Length)
 
 # rename a variable
 # Note that the syntax is rename(data, New = Old)
-data.Candidates <- rename(data.Candidates, Candidate.Number = Candidate.number)
+# Note if you have plyr loaded then you need to fully qualify or you get an error
+data.Candidates <- dplyr::rename(data.Candidates, Candidate.Number = Candidate.number)
 
 # change all factors to character
 data.Candidates <- data.Candidates %>% mutate_if(is.factor, as.character)
