@@ -1,4 +1,8 @@
 # ============================================================
+# use a regex expression to remove test variables
+rm(list=ls(pattern='^test'))
+
+# ============================================================
 # use data.table to look forward and backward in a dataset
 
 library(data.table)
