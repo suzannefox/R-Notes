@@ -58,6 +58,22 @@ summary <- df %>% summarise(COUNT = n(),
 # use grepl to filter - in this case installed libraries starting with g
 libraries.g <- as.data.frame(installed.packages()) %>% filter(grepl("^g",Package))
 
+# select everything else
+dplyr::select(COLA, COLZ, everything())
+
+# build a crosstab using dplyr and reshape2
+crosstab.changes <- data.changes %>%
+  dplyr::group_by(PERIOD) %>%
+  dplyr::count(PERIOD, Change_Type) %>%
+  dcast(PERIOD ~ Change_Type, value.var="n", fill=0) %>%
+  mutate(TOTAL_CHANGES = rowSums(.[-1])) %>%
+  mutate(NET_IN = rowSums(.[c("JOINED","REINSTATED")])) %>%
+  mutate(NET_OUT = rowSums(.[c("DECEASED","RESIGNED")])) %>%
+  mutate(NET_CHANGE = NET_IN - NET_OUT) %>%
+  select(PERIOD, TOTAL_CHANGES, 
+         NET_CHANGE, NET_IN, NET_OUT, 
+         JOINED, REINSTATED, DECEASED, RESIGNED, everything())
+
 # ============================================================
 # filter a dataframe by contents of another dataframe column
 
