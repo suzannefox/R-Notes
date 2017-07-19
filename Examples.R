@@ -74,6 +74,14 @@ crosstab.changes <- data.changes %>%
          NET_CHANGE, NET_IN, NET_OUT, 
          JOINED, REINSTATED, DECEASED, RESIGNED, everything())
 
+crosstab.totals <- crosstab.changes %>%
+  dplyr::summarise_if(is.numeric, sum, na.rm = TRUE) %>%
+  dplyr::mutate(PERIOD="TOTAL") %>%
+  dplyr::select(PERIOD, TOTAL_CHANGES, 
+       NET_CHANGE, NET_IN, NET_OUT, 
+       JOINED, REINSTATED, DECEASED, RESIGNED, everything()) %>%
+  rbind(crosstab.changes)
+
 # ============================================================
 # filter a dataframe by contents of another dataframe column
 
