@@ -86,6 +86,9 @@ crosstab.totals <- crosstab.changes %>%
        JOINED, REINSTATED, DECEASED, RESIGNED, everything()) %>%
   rbind(crosstab.changes)
 
+# join by different key names, keeping all columns
+full_join(Disk_Cases, Sql_Cases, by = c("file" = "PDF_Name"), all = TRUE) 
+
 # ============================================================
 # filter a dataframe by contents of another dataframe column
 
