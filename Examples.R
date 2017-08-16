@@ -86,8 +86,13 @@ crosstab.totals <- crosstab.changes %>%
        JOINED, REINSTATED, DECEASED, RESIGNED, everything()) %>%
   rbind(crosstab.changes)
 
-# join by different key names, keeping all columns
+# join by different key names, keeping all columns.NB all=TRUE doesn't seem to work consistently ??
 full_join(Disk_Cases, Sql_Cases, by = c("file" = "PDF_Name"), all = TRUE) 
+
+# select subset of variables and change to lowercase
+data.boruta <- data.merged %>%
+  select(HasPlan, V1:v8) %>%
+  setNames(tolower(names(.)))
 
 # ============================================================
 # filter a dataframe by contents of another dataframe column
