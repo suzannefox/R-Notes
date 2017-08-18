@@ -226,3 +226,20 @@ x3 <- bind_cols(x1,x2)
 x4 <- data.frame(Tag=names(xx),
                  Names=matrix(xx, nrow=length(xx), byrow=T))
 
+# ============================================================
+# caret and tidyverse linear model 
+test.x <- c(173, 169, 176, 166, 161, 164, 160, 158, 180, 187)
+test.y <- c(80, 68, 72, 75, 70, 65, 62, 60, 85, 92) 
+test.data <- data.frame(x=test.x, y=test.y)
+
+# train linear model
+test.modl <- train(y ~ x, 
+                   data = test.data, 
+                   method = "lm")
+# intercept and slope
+test.coef <- test.modl$finalModel$coefficients
+
+# viz
+ggplot(test.data, aes(x,y)) + 
+  geom_point() +
+  geom_abline(intercept = test.coef[1], slope = test.coef[2])
