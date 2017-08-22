@@ -1,4 +1,31 @@
 # ============================================================
+# dcast example
+library(reshape2)
+
+# Example 1 ============================================
+x <- data.frame(a=c(1,2,2,3,3,3,3,3,3),
+                b=c(3,3,4,1,3,4,1,3,4),
+                c=c(1,1,1,1,1,1,1,1,1))
+
+dcast(x, a ~ b, value.var = "c", fun.aggregate = sum, margins = TRUE)
+#       a 1 3 4 (all)
+# 1     1 0 1 0     1
+# 2     2 0 1 1     2
+# 3     3 2 2 2     6
+# 4 (all) 2 4 3     9
+
+# Example 2 ============================================
+y <- data.frame(a=c(1,2,2,3,3,3,3,3,3),
+                b=c(3,3,4,1,3,4,1,3,4))
+
+dcast(y, a ~ b, margins = TRUE)
+#       a 1 3 4 (all)
+# 1     1 0 1 0     1
+# 2     2 0 1 1     2
+# 3     3 2 2 2     6
+# 4 (all) 2 4 3     9
+
+# ============================================================
 # use a regex expression to remove test variables
 rm(list=ls(pattern='^test'))
 
