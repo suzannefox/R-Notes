@@ -1,4 +1,17 @@
 # ============================================================
+# collapse across records
+Cases.Brand <- Cases.Orig.Brand %>%
+  select(ID, Brand=Text_Brand) %>%
+  group_by(ID) %>%
+  summarise(Brands = paste(Brand, collapse=" / "))
+
+# ============================================================
+# split text
+files.matched <- files.matched %>%
+  mutate(NUMBER = substring(filename,1, regexpr("_",filename) -1)) %>%
+  mutate(NUMBER = gsub("-","/", NUMBER))
+
+# ============================================================
 # dcast example
 library(reshape2)
 
