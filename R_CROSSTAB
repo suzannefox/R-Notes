@@ -1,0 +1,108 @@
+
+# =======================================
+# This version - 26th September 2017
+# =======================================
+
+crosstab <- function(Side, Head, TileSide=0, TileHead=0, diagnostics=0) {
+  library(dplyr)
+
+  if (diagnostics==1) print("1.1 variable types")
+  print(paste("Side var :",class(Side)))
+  print(paste("Head var :",class(Head)))
+  
+  # if (is.na(nrow(Side))) {
+  #   print("ERROR : No data in Side var")
+  #   break
+  # }
+  # if (is.na(nrow(Head))) {
+  #   print("ERROR : No data in Head var")
+  #   break
+  # }
+  # if (nrow(Side) != nrow(Head)) {
+  #   print("ERROR : Side and Head must have equal row count")
+  #   break
+  # }
+  
+  # define numeric variable types
+  vars.nums <- c("numeric","integer")
+
+  # make a dataframe of the variables
+  if (diagnostics==1) print("1.2 make df")
+  Data.In <- data.frame(Side, Head)
+
+  if (diagnostics==1) print("1.3 recode side")
+  # recode into ranges if required
+  if (TileSide > 0 & class(Side) %in% vars.nums) {  
+    # split numerics into equal partitions
+    Data.In$SideNew <- dplyr::ntile(Side, TileSide) 
+    
+    SideNew.labs <- Data.In %>% 
+      group_by(SideNew) %>%
+      summarise(m1 = min(Side), m2 = max(Side)) %>%
+      mutate(ans = paste(SideNew,":",m1,"-",m2)) %>%
+      pull()
+    
+    Data.In$SideNew <- factor(Data.In$SideNew, labels = SideNew.labs) 
+
+    Side <- Data.In$SideNew    
+  }
+    
+  if (diagnostics==1) print("1.4 recode head")
+  if (TileHead > 0 & class(Head) %in% vars.nums) {
+    Data.In$HeadNew <- dplyr::ntile(Head, TileHead) 
+    
+    HeadNew.labs <- Data.In %>% 
+      group_by(HeadNew) %>%
+      summarise(m1 = min(Head), m2 = max(Head)) %>%
+      mutate(ans = paste(HeadNew,":",m1,"-",m2)) %>%
+      pull()
+    
+    Data.In$HeadNew <- factor(Data.In$HeadNew, labels = HeadNew.labs) 
+    
+    Head <- Data.In$HeadNew    
+  }
+  
+  # =============================================
+  # get the basic crosstab
+  if (diagnostics==1) print("2. basic dataframe")
+  mytable.cell <- table(Side, Head) 
+  
+  # get margin totals
+  mytable.tots <- addmargins(mytable.cell)
+  mytable.tots <- as.data.frame.matrix(mytable.tots)
+  
+  # =============================================
+  # change cells to percentages
+  #prop.table(mytable) # cell percentages
+  #prop.table(mytable, 1) # row percentages
+  mytable.cell <- prop.table(mytable.cell, 2) #col
+  mytable.cell <- round(mytable.cell * 100, digits=0)
+  mytable.cell <- as.data.frame.matrix(mytable.cell)
+  mytable.cell <- mytable.cell %>%
+    mutate_if(is.numeric, as.character)
+  
+  # add text for %
+  for (i in 0:nrow(mytable.cell)) {
+    if (i==0) next
+    for (j in 0:ncol(mytable.cell)) {
+      if (j==0) next
+        mytable.cell[i,j] <- paste0(mytable.cell[i,j],"%")
+    }
+  }
+  
+  # =============================================
+  # merge figure totals and percent totals
+  mytable.df <- mytable.tots
+  mytable.df[1:nrow(mytable.cell),1:ncol(mytable.cell)] <- mytable.cell
+  
+  # move col and row total to first element
+  mytable.df <- mytable.df %>%
+    select(Sum,everything())
+  x.r <- nrow(mytable.df)
+  mytable.df <- mytable.df[c(x.r,1:x.r-1),]
+  
+  # =============================================
+  # return the result
+  mytable.df
+  
+}
