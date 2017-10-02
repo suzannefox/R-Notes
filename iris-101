@@ -148,8 +148,6 @@ crosstab(data.train$Species, data.train$Sepal.Width,0,5)
 # ========================================================
 # boruta
 
-set.seed(13)
-
 # https://www.kaggle.com/jimthompson/boruta-feature-importance-analysis
 
 # candidate.features <- setdiff(names(sample.df),c(ID.VAR,TARGET.VAR))
@@ -162,6 +160,9 @@ set.seed(13)
 # unique.classes <- unique(data.classes)
 # attr.data.types <- lapply(unique.classes,function(x){names(data.classes[data.classes==x])})
 # names(attr.data.types) <- unique.classes
+
+library(Boruta)
+set.seed(13)
 
 # select candidate features
 # make sure no missing values
