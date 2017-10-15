@@ -1,5 +1,12 @@
 # ============================================================
-# collapse across records
+# generate a unique id
+x <- iris %>%
+  mutate(Record_Id = 1:n()) %>%
+  group_by(Species) %>%
+  mutate(Group_Id = 1:n())
+
+# ============================================================
+# collapse a field across records
 Cases.Brand <- Cases.Orig.Brand %>%
   select(ID, Brand=Text_Brand) %>%
   group_by(ID) %>%
