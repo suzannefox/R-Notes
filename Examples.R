@@ -1,3 +1,14 @@
+
+# ============================================================
+# measure run time - 5 ways
+# https://www.r-bloggers.com/5-ways-to-measure-running-time-of-r-code/
+
+start_time <- Sys.time()
+sleep_for_a_minute()
+end_time <- Sys.time()
+
+end_time - start_time
+
 # ============================================================
 # generate a unique id
 x <- iris %>%
