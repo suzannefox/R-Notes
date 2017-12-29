@@ -1,4 +1,9 @@
 # ============================================================
+# dplyr slice to get records by record numbers
+
+data.39907 <- delivery_point %>% slice(39907)
+
+# ============================================================
 # dplyr case_when
 
 data.Search %>%
