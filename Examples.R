@@ -1,3 +1,12 @@
+# ============================================================
+# dplyr case_when
+
+data.Search %>%
+  mutate(Outcome=case_when(RecordsMatched == 0 ~ "No match",
+                           RecordsMatched == 1 ~ "Unique Match",
+                           RecordsMatched > 1 ~ "Multiple Matches",
+                           TRUE ~ "Problem")) %>%
+  count(Outcome)
 
 # ============================================================
 # measure run time - 5 ways
