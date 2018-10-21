@@ -1,0 +1,64 @@
+
+# sourced from https://stackoverflow.com/questions/19921842/plotting-multiple-time-series-on-the-same-plot-using-ggplot
+
+# libraries ----------------------------------------------------
+
+library(tidyverse)
+library(ggplot2)
+
+# make up some data --------------------------------------------
+# make 3 dataframes with 100 days
+# use random values for Temp and CO
+
+BED1 <- data.frame(
+  data_date = seq.Date(from = as.Date('2017-01-01'),by = 'day', length.out = 100),
+  Var1 = runif(100,1,100),
+  Var2 = runif(100,50,70),
+  ID = "001"
+)
+
+BED2 <- data.frame(
+  data_date = seq.Date(from = as.Date('2017-01-01'),by = 'day', length.out = 100),
+  Var1 = runif(100,9,80),
+  Var2 = runif(100,30,45),
+  ID = "002"
+)
+
+BED3 <- data.frame(
+  data_date = seq.Date(from = as.Date('2017-01-01'),by = 'day', length.out = 100),
+  Var1 = runif(5,50,110),
+  Var2 = runif(5,60,90),
+  ID = "003"
+)
+
+# put them all together
+DATA <- BED1 %>%
+  bind_rows(BED2) %>%
+  bind_rows(BED3)
+
+rm(BED1, BED2, BED3)
+
+# plot ----------------------------
+
+# format is
+# ggplot(data, aes(x=x axis variable, y = y axis variable, col=what to split by))
+
+ggplot(DATA, 
+       aes(x=data_date, y=Var1, col=ID)) + 
+  geom_line() +
+  ggtitle('Compare Var1 over time')
+
+ggplot(DATA, 
+       aes(x=data_date, y=Var2, col=ID)) + 
+  geom_line() +
+  ggtitle('Compare Var2 over time')
+
+# plot index of Var1/Var2
+# you could do correlation if you like
+DATA <- DATA %>%
+  mutate(coeff = Var1/Var2)
+
+ggplot(DATA, 
+       aes(x=data_date, y=coeff, col=ID)) + 
+  geom_line() +
+  ggtitle('Compare coeff over time')
