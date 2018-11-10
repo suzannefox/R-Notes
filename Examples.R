@@ -1,3 +1,6 @@
+# great resource
+https://shirinsplayground.netlify.com/2018/11/neural_nets_explained/
+
 # ============================================================
 # dplyr slice to get records by record numbers
 
